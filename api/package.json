@@ -1,0 +1,36 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "prebuild": "rm -rf dist",
+    "build": "tsc",
+    "dev": "ts-node-dev --transpileOnly --no-notify src"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@hapi/joi": "^16.1.8",
+    "bcryptjs": "^2.4.3",
+    "connect-redis": "^4.0.3",
+    "express": "^4.17.1",
+    "express-session": "^1.17.0",
+    "ioredis": "^4.14.1",
+    "mongoose": "^5.8.4"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.2",
+    "@types/connect-redis": "0.0.13",
+    "@types/express": "^4.17.2",
+    "@types/express-session": "^1.15.16",
+    "@types/hapi__joi": "^16.0.6",
+    "@types/ioredis": "^4.14.3",
+    "@types/mongodb": "^3.3.14",
+    "@types/mongoose": "^5.5.38",
+    "@types/node": "^13.1.2",
+    "ts-node-dev": "^1.0.0-pre.44",
+    "typescript": "^3.7.4"
+  }
+}
