@@ -1,7 +1,7 @@
 {
-  "name": "node-au",
+  "name": "node-auentication-api",
   "version": "1.0.0",
-  "description": "",
+  "description": "node-auentication-api",
   "main": "index.js",
   "scripts": {
     "up": "mkdir -p data && docker-compose up -d",
@@ -10,7 +10,7 @@
     "down": "docker-compose down",
     "dev": "npm run dev --prefix api"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "keywords": ["node", "typescript", "redis", "mongoose"],
+  "author": "sandy",
+  "license": "MIT"
 }
