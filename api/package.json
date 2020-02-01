@@ -6,7 +6,9 @@
   "scripts": {
     "prebuild": "rm -rf dist",
     "build": "tsc",
-    "dev": "ts-node-dev --transpileOnly --no-notify src"
+    "dev": "ts-node-dev --transpileOnly --no-notify src",
+    "test": "jest --coverage",
+    "test:watch": "jest --coverage --watchAll"
   },
   "keywords": [],
   "author": "",
@@ -27,9 +29,12 @@
     "@types/express-session": "^1.15.16",
     "@types/hapi__joi": "^16.0.6",
     "@types/ioredis": "^4.14.3",
+    "@types/jest": "^25.1.1",
     "@types/mongodb": "^3.3.14",
     "@types/mongoose": "^5.5.38",
     "@types/node": "^13.1.2",
+    "ts-jest": "^25.0.0",
+    "ts-node": "^8.6.2",
     "ts-node-dev": "^1.0.0-pre.44",
     "typescript": "^3.7.4"
   }
