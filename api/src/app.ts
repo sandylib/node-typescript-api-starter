@@ -1,11 +1,26 @@
 import express from 'express'
+import mongoose from 'mongoose'
 import session, {Store} from 'express-session'
 import { SESSION_OPTIONS } from './config'
 import {register, login, home} from './routes'
 import { serverError, notFound } from './middleware'
+import Redis from 'ioredis'
+import connectRedis from 'connect-redis'
+import  {REDIS_OPTIONS, MONGO_URI, MONGO_OPTIONS} from './config'
 
-export const createApp = (store: Store) => {
 const app = express()
+
+mongoose.connect(MONGO_URI, MONGO_OPTIONS)
+.then(() => { /** ready to use. The `mongoose.connect()` promise resolves to undefined. */ })
+.catch(err => {
+  console.log("MongoDB connection error. Please make sure MongoDB is running. " + err); // process.exit();
+});
+
+const RedisStore = connectRedis(session)
+
+const client = new Redis(REDIS_OPTIONS)
+
+const store = new RedisStore({client})
 
 app.use(
   session({
@@ -26,5 +41,4 @@ app.use(notFound)
 
 app.use(serverError)
 
-return app;
-}
+export default app;
