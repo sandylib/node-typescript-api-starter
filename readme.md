@@ -3,7 +3,9 @@
 ## curl
 
 ```sh
-curl -X POST localhost:3000/login -H 'Content-Type: application/json' \
+curl -v  localhost:3000/home --cookie 'sid=s%3A_zHhKduFB-uggbg8vEJ4XlZoAlsDkRdT.nE%2FxxAvYDuBg22wJ%2BO7A8evKnrUllgg3Ar7gJq9NhEY'
+
+curl -v -X POST localhost:3000/login -H 'Content-Type: application/json' \
   -d '{"email": "sandy@gmail.com", "password": "Secret12"}'
 
 curl -v -X POST localhost:3000/register -H 'Content-Type: application/json' \
