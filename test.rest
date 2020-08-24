@@ -1,0 +1,31 @@
+
+POST  http://localhost:8080/api/v1/register
+Content-Type: application/json
+
+{
+  "email": "sandy2@gmail.com",
+  "name": "test",
+  "password": "Secret123",
+  "passwordConfirmation": "Secret123"
+}
+
+###
+
+POST  http://localhost:8080/api/v1/login
+Content-Type: application/json
+
+{
+  "email": "sandy2@gmail.com",
+  "password": "Secret123"
+}
+
+###
+
+POST  http://localhost:8080/api/v1/logout
+Content-Type: application/json
+
+{
+  "email": "Secret123",
+  "password": "Secret123"
+}
+

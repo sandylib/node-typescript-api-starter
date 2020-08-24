@@ -1,8 +1,8 @@
 import express from 'express'
 import mongoose from 'mongoose'
-import session, {Store} from 'express-session'
+import session from 'express-session'
 import { SESSION_OPTIONS } from './config'
-import {register, login, home} from './routes'
+import routes from './routes'
 import { serverError, notFound } from './middleware'
 import Redis from 'ioredis'
 import connectRedis from 'connect-redis'
@@ -31,11 +31,7 @@ app.use(
 
 app.use(express.json())
 
-app.use(home)
-
-app.use(register)
-
-app.use(login)
+app.use('/api/v1', routes);
 
 app.use(notFound)
 

@@ -5,5 +5,5 @@ const {
 
 export const IN_PROD = NODE_ENV === 'production'
 
-export const APP_PORT = 3000
+export const APP_PORT = 8080
 
