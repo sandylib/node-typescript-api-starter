@@ -2,13 +2,13 @@ import { Router } from "express";
 
 import  register from './register';
 import  login from './login';
-import  home from './home';
+import  profile from './profile';
 
 const routes = Router();
 
 routes.use(register);
 routes.use(login);
-routes.use(home);
+routes.use(profile);
 
 const rootRouter = Router();
 
