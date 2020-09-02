@@ -1,13 +1,13 @@
 import React from 'react';
-import { useHistory } from "react-router-dom";
+import { useLocation, Redirect } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 import Link from '@material-ui/core/Link';
 import Typography from '../../components/Typography/Typography';
 import AppForm from '../../components/AppForm/AppForm';
-import { email,required } from '../../form/validation';// './modules/form/validation';
+import { email,required } from '../../form/validation';
 import RFTextField from '../../form/RFTextField';
 import FormButton from '../../form/FormButton';
-
+import FormFeedback from '../../form/FormFeedback';
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -32,13 +32,19 @@ const deaultErrors = {
   password: undefined
 }
 
-function SignIn() {
-  const history = useHistory();
+function SignIn({authenticate}) {
+  const location = useLocation();
   const classes = useStyles();
   const [values, setValues] = React.useState(deaultValues);
   const [submitting, setSubmitting] = React.useState(false);
   const [errors, setErrors] = React.useState(deaultErrors);
   const [submitError, setSubmitError] = React.useState(false);
+  const { from } = location.state || { from: { pathname: "/" } };
+  const [authData, setAuthData] = React.useState({
+    isLoggingIn: true,
+    redirectToReferrer: false,
+    hasAuthenticationFailed: false
+  })
   const handleChange = ({target}) => {
     const {name, value} = target;
    
@@ -49,24 +55,24 @@ function SignIn() {
    
   };
 
-  const validate = (values) => {
-    const errors = required(['email', 'password'], values);
+  const validate = () => {
+    const validateErrors = required(['email', 'password'], values);
 
-    if (!errors.email) {
+    if (!validateErrors.email) {
       const emailError = email(values.email, values);
       if (emailError) {
-        errors.email = email(values.email, values);
+        validateErrors.email = email(values.email, values);
       }
     }
 
-    return errors;
+    return validateErrors;
   };
 
 
   const handleSubmit = async (e) => {
 
    e.preventDefault();
-    const validationErrors = validate(values);
+    const validationErrors = validate();
  
     if( Object.keys(validationErrors).length > 0) {
       
@@ -78,33 +84,40 @@ function SignIn() {
     try {
     
       setSubmitting(true);
-     
-      const resp = await fetch('/api/v1/login', {
-        credentials: 'same-origin',
-        headers: { 'Content-Type': 'application/json; charset=utf-8' },
-        method: 'POST',
-        body: JSON.stringify({
-          email: values.email,
-          password: values.password
-        })
-      })
-
-      history.push('/');
+      const resp =  await authenticate(values.email, values.password);
       setSubmitting(false);
+ 
+      if(resp.status === 200){
+        setAuthData({
+          isLoggingIn: false,
+          redirectToReferrer: true,
+          hasAuthenticationFailed: false
+        });
+      } else {
+        const error = await resp.json();
+        setSubmitError(error.message);
+      }
+      
+
       
     } catch (error) {
-      setSubmitting(error.message);
+     
+      setAuthData({
+        isLoggingIn: false,
+        redirectToReferrer: false,
+        hasAuthenticationFailed: true
+      });
       setSubmitting(false);
     }
 
    
   };
 
-  
+  if (authData.redirectToReferrer) return <Redirect to={from} />;
+  if(authData.isLoggingIn) {
 
   return (
     <React.Fragment>
-      {/* <AppAppBar /> */}
       <AppForm>
         <React.Fragment>
           <Typography variant="h3" gutterBottom marked="center" align="center">
@@ -117,8 +130,6 @@ function SignIn() {
             </Link>
           </Typography>
         </React.Fragment>
-      
-       
             <form  className={classes.root}  autoComplete="off"  noValidate>
               <RFTextField
                 autoComplete="email"
@@ -146,6 +157,12 @@ function SignIn() {
                 margin="normal"
                 value={values.password}
               />
+
+          {submitError ? (
+            <FormFeedback className={classes.feedback} error>
+              {submitError}
+            </FormFeedback>
+          ) : null}
            
               <FormButton
                 className={classes.button}
@@ -159,9 +176,13 @@ function SignIn() {
               </FormButton>
             </form>
       </AppForm>
-      {/* <AppFooter /> */}
     </React.Fragment>
-  );
+   );
+  }
+
+  if(authData.hasAuthenticationFailed) return  (<Redirect to={'/notfound'} />);
+
+  return <div>Loading...</div>
 }
 
 export default SignIn;

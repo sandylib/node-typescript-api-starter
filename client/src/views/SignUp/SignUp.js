@@ -1,15 +1,17 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
+import { useHistory } from "react-router-dom";
 import Link from '@material-ui/core/Link';
 import Typography from '../../components/Typography/Typography';
-import AppFooter from '../AppFooter/AppFooter';
-import AppAppBar from '../AppAppBar/AppAppBar';
 import AppForm from '../../components/AppForm/AppForm';
 import { email, required } from '../../form/validation';
 import RFTextField from '../../form/RFTextField';
 import FormButton from '../../form/FormButton';
-// import FormFeedback from './modules/form/FormFeedback';
+import { withAuth } from '../../components/Authentication/Authentication'
+import FormFeedback from '../../form/FormFeedback';
+import request from '../../utils/request';
+import { registUrl } from '../../config/url';
+import {CURRENT_USER} from '../../constants/applicationConstants'
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -25,51 +27,26 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const deaultValues = {
-  firstName:'',
-  lastName:'',
   email:'',
+  name:'',
   password: '',
   passwordConfirmation: ''
 }
 
 const deaultErrors = {
-  firstName:'',
-  lastName:'',
   email:'',
+  name: '',
   password: '',
   passwordConfirmation: ''
 }
 
-function SignUp() {
+function SignUp({authenticate}) {
   const classes = useStyles();
+  const history = useHistory();
   const [values, setValues] = React.useState(deaultValues);
   const [errors, setErrors] = React.useState(deaultErrors);
   const [submitting, setSubmitting] = React.useState(false);
-
-  const validate = (values) => {
-    const errors = required(['firstName', 'lastName', 'email', 'password'], values);
- 
-    if (!errors.email) {
-      const emailError = email(values.email, values);
-      if (emailError) {
-        errors.email = email(values.email, values);
-      }
-    }
-
-    return errors;
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const validationErrors = validate(values);
-    if(validationErrors){
-      return setErrors(validationErrors);
-    }
-
-    setSubmitting(true);
-
-  
-  };
+  const [submitError, setSubmitError] = React.useState(false);
 
   const handleChange = ({target}) => {
     const {name, value} = target;
@@ -81,9 +58,69 @@ function SignUp() {
    
   };
 
+  const validate = () => {
+    const errorsObj = required([ 'email', 'name', 'password', 'passwordConfirmation'], values);
+ 
+    if (!errorsObj.email) {
+      const emailError = email(values.email, values);
+      if (emailError) {
+        errorsObj.email = email(values.email, values);
+      }
+    }
+
+    return errorsObj;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const validationErrors = validate();
+
+    if( Object.keys(validationErrors).length > 0) {
+   
+      setErrors(validationErrors);
+      return;
+
+    }
+
+    try {
+    
+      setSubmitting(true);
+      const validCurrentUser = {
+        email: values.email,
+        name: values.name,
+        password: values.password,
+        passwordConfirmation: values.passwordConfirmation
+      };
+      debugger;
+      const resp =  await request(registUrl, {
+        method: 'POST',
+        body: JSON.stringify({...validCurrentUser})
+      });
+      debugger;
+      setSubmitting(false);
+ 
+      if(resp.status === 200){
+        await authenticate(values.email, values.password);
+
+       history.push('/');
+      } else {
+        const error = await resp.json();
+        setSubmitError(error.message);
+      }
+      
+      
+    } catch (error) {
+      setSubmitting('create failed, please try it again later')
+      setSubmitting(false);
+    }
+
+  
+  };
+
+ 
+
   return (
     <React.Fragment>
-      {/* <AppAppBar /> */}
       <AppForm>
         <React.Fragment>
           <Typography variant="h3" gutterBottom marked="center" align="center">
@@ -96,34 +133,7 @@ function SignUp() {
           </Typography>
         </React.Fragment>
             <form  className={classes.form} autoComplete="off" noValidate>
-              <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                  <RFTextField
-                    onChange={handleChange}
-                    autoFocus
-                    disabled={submitting}
-                    autoComplete="fname"
-                    fullWidth
-                    label="First name"
-                    name="firstName"
-                    error={errors.firstName}
-                    value={values.firstName}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <RFTextField
-                    onChange={handleChange}
-                    disabled={submitting}
-                    autoComplete="lname"
-                    fullWidth
-                    label="Last name"
-                    name="lastName"
-                    error={errors.lastName}
-                    value={values.lastName}
-                  />
-                </Grid>
-              </Grid>
-              <RFTextField
+             <RFTextField
                 autoComplete="email"
                 fullWidth
                 disabled={submitting}
@@ -132,6 +142,17 @@ function SignUp() {
                 name="email"
                 error={errors.email}
                 value={values.email}
+                onChange={handleChange}
+              />
+              <RFTextField
+                autoComplete="name"
+                fullWidth
+                disabled={submitting}
+                label="Name"
+                margin="normal"
+                name="name"
+                error={errors.name}
+                value={values.name}
                 onChange={handleChange}
               />
               <RFTextField
@@ -160,24 +181,24 @@ function SignUp() {
                 onChange={handleChange}
               />
              
-             {/* <FormFeedback className={classes.feedback} error>
+            {submitError && submitError.length > 0 && <FormFeedback className={classes.feedback} error>
                       {submitError}
-                    </FormFeedback> */}
+                    </FormFeedback>}
               <FormButton
                 className={classes.button}
                 disabled={submitting}
                 color="secondary"
                 fullWidth
+                onClick={handleSubmit}
               >
                 {submitting  ? 'In progress…' : 'Sign Up'}
               </FormButton>
             </form>
        
       </AppForm>
-      {/* <AppFooter /> */}
     </React.Fragment>
   );
 }
 
-export default SignUp;
+export default withAuth(SignUp);
 

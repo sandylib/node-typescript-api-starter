@@ -6,7 +6,9 @@ import Link from '@material-ui/core/Link';
 import AppBar from  '../../components/AppBar/AppBar';
 import Toolbar, { styles as toolbarStyles } from '../../components/Toolbar/Toolbar';
 import {useLocation, useHistory} from 'react-router-dom';
-
+import { signOutUrl } from '../../config/url';
+import request from '../../utils/request';
+import {CURRENT_USER} from '../../constants/applicationConstants'
 const styles = (theme) => ({
   title: {
     fontSize: 24,
@@ -40,19 +42,20 @@ function AppAppBar(props) {
   const history = useHistory();
   const { classes } = props;
   const location = useLocation();
-  debugger;
+ 
   const logout = async () => {
     try {
-      const resp = await fetch('/api/v1/logout', {
-        credentials: 'same-origin',
-        headers: { 'Content-Type': 'application/json; charset=utf-8' },
-        method: 'POST',
-        body: JSON.stringify({
-          email: "sandy2@gmail.com",
-          password: "Secret123"
+      const currentUserStr = localStorage.getItem(CURRENT_USER);
+      if(currentUserStr) {
+        const currentUserData  = JSON.parse(currentUserStr);
+        const resp = await request(signOutUrl, {
+          method: 'POST',
+          body: JSON.stringify(currentUserData.currentUser)
         })
-      })
-      history.push('/signin');
+        localStorage.removeItem(CURRENT_USER);
+        history.push('/signin');
+      }
+     
       
     } catch (error) {
 

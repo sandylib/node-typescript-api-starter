@@ -21,6 +21,6 @@ services:
     image: redis
     ports:
       - '6379:6379'
-    command: ['--requirepass "secret"']
+    command: redis-server --requirepass secret --appendonly yes --appendfsync always 
     
 

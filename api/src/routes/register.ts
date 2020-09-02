@@ -20,7 +20,7 @@ router.post('/register', guest, catchAsync(async (req, res) => {
     email, name, password
   })
 
-  logIn(req,user.id)
+  // logIn(req,user.id)
   res.json({message: 'OK'})
 }) )
 
