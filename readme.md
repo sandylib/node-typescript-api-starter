@@ -1,3 +1,23 @@
+# steps for running it up
+
+## install packages should be separate for client and api. 
+
+### `cd api ` run `npm install`
+### `cd client ` run `npm install`
+
+## running api has denpendence with mongodb and redis, requires docker installed in your local machine
+
+### in the root of your project run `npm run up` will up mongodb, redis and api server
+
+## running client react app authentication 
+
+### `cd client` run `npm install`
+
+# if you are lost, here is the youtube link:
+
+https://www.youtube.com/watch?v=Ujk3emNC6L0
+
+
 # node-auth
 
 ## curl
