@@ -29,3 +29,15 @@ Content-Type: application/json
   "password": "Secret1235"
 }
 
+
+
+POST  https://json.astrologyapi.com/v1/chinese_zodiac
+Content-Type: application/json
+
+{
+  "email": "sandy4@gmail.com",
+  "name": "test4",
+  "password": "Secret1235",
+  "passwordConfirmation": "Secret1235"
+}
+

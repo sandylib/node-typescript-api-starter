@@ -11,7 +11,6 @@ const hasPermissions = (permissions, requiredPermissions) => {
 };
 
 const PrivateRoute = ({ render: renderProp, component: Component, permissions: requiredPermissions = [], ...rest }) => {
-  debugger;
   return (
   <Route
     {...rest}

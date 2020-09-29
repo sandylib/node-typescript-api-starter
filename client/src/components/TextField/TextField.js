@@ -20,7 +20,7 @@ const styles = (theme) => ({
     },
   },
   inputBorder: {
-    border: '1px solid #e9ddd0',
+    border: theme.inputBorder.border,
     '&:focus': {
       borderColor: theme.palette.secondary.main,
     },

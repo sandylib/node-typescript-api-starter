@@ -91,12 +91,12 @@ function SignUp({authenticate}) {
         password: values.password,
         passwordConfirmation: values.passwordConfirmation
       };
-      debugger;
+     
       const resp =  await request(registUrl, {
         method: 'POST',
         body: JSON.stringify({...validCurrentUser})
       });
-      debugger;
+   
       setSubmitting(false);
  
       if(resp.status === 200){
