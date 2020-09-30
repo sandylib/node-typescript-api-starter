@@ -32,7 +32,7 @@ const deaultErrors = {
   password: undefined
 }
 
-function SignIn({authenticate}) {
+function SignIn({authenticate, isAuthenticated}) {
   const location = useLocation();
   const classes = useStyles();
   const [values, setValues] = React.useState(deaultValues);
@@ -41,8 +41,8 @@ function SignIn({authenticate}) {
   const [submitError, setSubmitError] = React.useState(false);
   const { from } = location.state || { from: { pathname: "/" } };
   const [authData, setAuthData] = React.useState({
-    isLoggingIn: true,
-    redirectToReferrer: false,
+    isLoggingIn: !isAuthenticated,
+    redirectToReferrer: isAuthenticated,
     hasAuthenticationFailed: false
   })
   const handleChange = ({target}) => {

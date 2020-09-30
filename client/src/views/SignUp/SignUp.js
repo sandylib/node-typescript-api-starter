@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { useHistory } from "react-router-dom";
+import { useHistory, Redirect, useLocation } from "react-router-dom";
 import Link from '@material-ui/core/Link';
 import Typography from '../../components/Typography/Typography';
 import AppForm from '../../components/AppForm/AppForm';
@@ -40,9 +40,11 @@ const deaultErrors = {
   passwordConfirmation: ''
 }
 
-function SignUp({authenticate}) {
+function SignUp({authenticate, isAuthenticated}) {
   const classes = useStyles();
   const history = useHistory();
+  const location = useLocation();
+  const { from } = location.state || { from: { pathname: "/" } };
   const [values, setValues] = React.useState(deaultValues);
   const [errors, setErrors] = React.useState(deaultErrors);
   const [submitting, setSubmitting] = React.useState(false);
@@ -117,7 +119,7 @@ function SignUp({authenticate}) {
   
   };
 
- 
+ if(isAuthenticated) return <Redirect to={from} />
 
   return (
     <React.Fragment>
